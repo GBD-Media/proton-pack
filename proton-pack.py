@@ -219,6 +219,11 @@ class switch(object):
 		self.c = c
 		self.p = p
 		self.s = s
+		self.led_lit = 0
+		self.led_pin = 18
+
+		
+		GPIO.setup(self.led_pin, GPIO.OUT, initial=GPIO.LOW) #LED
 
 		GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 		self.handler = ButtonHandler(pin, self, edge='both', bouncetime=200)
@@ -230,12 +235,14 @@ class switch(object):
 		self.c.switch_off()
 		self.p.switch_off()
 		self.s.switch_off()
+		GPIO.output(self.led_pin, 0)
 
 	def falling(self, args):
 		print("Switch on")
 		self.c.switch_on()
 		self.p.switch_on()
 		self.s.switch_on()
+		GPIO.output(self.led_pin, 1)
 
 
 class theme(object):

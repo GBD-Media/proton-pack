@@ -70,7 +70,7 @@ class power_cell(object):
 
 # State machine for gun_bg (gun bar graph LEDs)
 class gun_bg(object):
-	leds = [19, 20, 21, 22, 23, 24]
+	leds = [19, 21, 22, 23, 24]
 	states = [
 		{'name': 'off'},
 		{'name': 'running', 'timeout': 0.2, 'on_timeout': 'run_timeout'}

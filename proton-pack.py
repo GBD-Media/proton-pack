@@ -285,19 +285,19 @@ class switch(object):
 
 	def rising(self, args):
 		print("Switch off")
+		GPIO.output(self.led_pin, 0)
 		self.c.switch_off()
 		self.p.switch_off()
 		self.s.switch_off()
 		self.g.switch_off()
-		GPIO.output(self.led_pin, 0)
 
 	def falling(self, args):
 		print("Switch on")
+		GPIO.output(self.led_pin, 1)
 		self.c.switch_on()
 		self.p.switch_on()
 		self.s.switch_on()
 		self.g.switch_on()
-		GPIO.output(self.led_pin, 1)
 
 
 class theme(object):

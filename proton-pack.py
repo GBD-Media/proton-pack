@@ -68,6 +68,58 @@ class power_cell(object):
 		for led in self.leds[0:self.leds_lit]:
 			GPIO.output(led, 1)
 
+# State machine for gun_bg (gun bar graph LEDs)
+class gun_bg(object):
+	leds = [19, 20, 21, 22, 23, 24]
+	states = [
+		{'name': 'off'},
+		{'name': 'running', 'timeout': 0.2, 'on_timeout': 'run_timeout'}
+	]
+
+	def __init__(self):
+		for led in self.leds:
+			GPIO.setup(led, GPIO.OUT, initial=GPIO.LOW)
+
+		self.leds_lit = 0
+		self.machine = CustomStateMachine(model=self, states=gun_bg.states, initial='off')
+
+		self.machine.add_transition('switch_on', 'off', 'running')
+		self.machine.add_transition('increment', 'running', 'running')
+		self.machine.add_transition('switch_off', '*', 'off')
+
+	def on_exit_off(self):
+		self.dim_all_led()
+
+	def on_enter_running(self):
+		self.advance_led()
+		print("gun_bg %d leds lit" % self.leds_lit)
+
+	def on_enter_off(self):
+		self.dim_all_led()
+
+	def dim_all_led(self):
+		print("gun_bg is off")
+		self.leds_lit = 0
+		for led in self.leds:
+			GPIO.output(led, 0)
+
+	def run_timeout(self):
+		self.increment()
+
+	def advance_led(self):
+		self.leds_lit = (self.leds_lit + 1) % (len(self.leds) + 1)
+		if self.leds_lit == 0:
+			print("gun_bg is dim")
+		else:
+			print("gun_bg %s" % " ".join(str(x) for x in self.leds[0:self.leds_lit]))
+
+		for led in self.leds:
+			GPIO.output(led, 0)
+		for led in self.leds[0:self.leds_lit]:
+			GPIO.output(led, 1)
+
+
+
 # State machine for cyclotron
 class cyclotron(object):
 	leds = [11, 7, 5, 3]
@@ -214,11 +266,12 @@ class ButtonHandler(threading.Thread):
 		self.lock.release()
 
 class switch(object):
-	def __init__(self, pin, c, p, s):
+	def __init__(self, pin, c, p, s, g):
 		self.pin = pin
 		self.c = c
 		self.p = p
 		self.s = s
+		self.g = g
 		self.led_lit = 0
 		self.led_pin = 18
 
@@ -235,6 +288,7 @@ class switch(object):
 		self.c.switch_off()
 		self.p.switch_off()
 		self.s.switch_off()
+		self.g.switch_off()
 		GPIO.output(self.led_pin, 0)
 
 	def falling(self, args):
@@ -242,15 +296,17 @@ class switch(object):
 		self.c.switch_on()
 		self.p.switch_on()
 		self.s.switch_on()
+		self.g.switch_on()
 		GPIO.output(self.led_pin, 1)
 
 
 class theme(object):
-	def __init__(self, pin, c, p, s):
+	def __init__(self, pin, c, p, s, g):
 		self.pin = pin
 		self.c = c
 		self.p = p
 		self.s = s
+		self.g = g
 
 		GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 		self.handler = ButtonHandler(pin, self, edge='both', bouncetime=200)
@@ -267,11 +323,12 @@ class theme(object):
 
 
 class fire(object):
-	def __init__(self, pin, c, p, s):
+	def __init__(self, pin, c, p, s, g):
 		self.pin = pin
 		self.c = c
 		self.p = p
 		self.s = s
+		self.g = g
 
 		GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 		self.handler = ButtonHandler(pin, self, edge='both', bouncetime=200)
@@ -299,10 +356,11 @@ def run_logic(args):
 	c = cyclotron()
 	p = power_cell(c)
 	s = sound_generator()
+	g = gun_bg()
 
-	sw = switch(16, c, p, s)
-	f = fire(13, c, p, s)
-	t = theme(15, c, p, s)
+	sw = switch(16, c, p, s, g)
+	f = fire(13, c, p, s, g)
+	t = theme(15, c, p, s, g)
 
 	while True:
 		time.sleep(5)

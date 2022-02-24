@@ -128,6 +128,7 @@ class gun_blast(object):
 
 	def __init__(self):
 		for led in self.leds:
+			print('setting %d' % led)
 			GPIO.setup(led, GPIO.OUT, initial=GPIO.LOW)
 
 		self.leds_lit = 0

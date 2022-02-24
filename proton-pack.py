@@ -406,20 +406,27 @@ class fire(object):
 # It will transmit the switch press events, affecting each state machine
 #
 def run_logic(args):
-	GPIO.setmode(GPIO.BOARD)
+	try:
+		GPIO.setmode(GPIO.BOARD)
 
-	c = cyclotron()
-	p = power_cell(c)
-	s = sound_generator()
-	g = gun_bg()
-	b = gun_blast()
+		c = cyclotron()
+		p = power_cell(c)
+		s = sound_generator()
+		g = gun_bg()
+		b = gun_blast()
 
-	sw = switch(16, c, p, s, g, b)
-	f = fire(13, c, p, s, g, b)
-	t = theme(15, c, p, s, g, b)
+		sw = switch(16, c, p, s, g, b)
+		f = fire(13, c, p, s, g, b)
+		t = theme(15, c, p, s, g, b)
 
-	while True:
-		time.sleep(5)
+		while True:
+			time.sleep(5)
+	
+	except KeyboardInterrupt:
+		print("Exiting Proton Pack")
+	finally:
+		GPIO.cleanup()
+
 
 def main():
 	parser = argparse.ArgumentParser(

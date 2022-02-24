@@ -38,13 +38,13 @@ class power_cell(object):
 
 	def on_enter_running(self):
 		self.advance_led()
-		print("power_pack %d leds lit" % self.leds_lit)
+		# print("power_pack %d leds lit" % self.leds_lit)
 
 	def on_enter_off(self):
 		self.dim_all_led()
 
 	def dim_all_led(self):
-		print("power_pack is off")
+		# print("power_pack is off")
 		self.leds_lit = 0
 		for led in self.leds:
 			GPIO.output(led, 0)
@@ -92,13 +92,13 @@ class gun_bg(object):
 
 	def on_enter_running(self):
 		self.advance_led()
-		print("gun_bg %d leds lit" % self.leds_lit)
+		# print("gun_bg %d leds lit" % self.leds_lit)
 
 	def on_enter_off(self):
 		self.dim_all_led()
 
 	def dim_all_led(self):
-		print("gun_bg is off")
+		# print("gun_bg is off")
 		self.leds_lit = 0
 		for led in self.leds:
 			GPIO.output(led, 0)

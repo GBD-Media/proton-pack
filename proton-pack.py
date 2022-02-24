@@ -323,11 +323,11 @@ class switch(object):
 		self.s = s
 		self.g = g
 		self.b = b
-		self.led_lit = 0
-		self.led_pin = 18
+		# self.led_lit = 0
+		# self.led_pin = 18
 
 		
-		GPIO.setup(self.led_pin, GPIO.OUT, initial=GPIO.LOW) #LED
+		# GPIO.setup(self.led_pin, GPIO.OUT, initial=GPIO.LOW) #LED
 
 		GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 		self.handler = ButtonHandler(pin, self, edge='both', bouncetime=200)

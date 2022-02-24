@@ -58,10 +58,10 @@ class power_cell(object):
 			self.cyclotron.increment()
 
 		self.leds_lit = (self.leds_lit + 1) % (len(self.leds) + 1)
-		if self.leds_lit == 0:
-			print("power_pack is dim")
-		else:
-			print("power_pack %s" % " ".join(str(x) for x in self.leds[0:self.leds_lit]))
+		# if self.leds_lit == 0:
+		# 	print("power_pack is dim")
+		# else:
+		# 	print("power_pack %s" % " ".join(str(x) for x in self.leds[0:self.leds_lit]))
 
 		for led in self.leds:
 			GPIO.output(led, 0)
@@ -108,10 +108,10 @@ class gun_bg(object):
 
 	def advance_led(self):
 		self.leds_lit = (self.leds_lit + 1) % (len(self.leds) + 1)
-		if self.leds_lit == 0:
-			print("gun_bg is dim")
-		else:
-			print("gun_bg %s" % " ".join(str(x) for x in self.leds[0:self.leds_lit]))
+		# if self.leds_lit == 0:
+		# 	print("gun_bg is dim")
+		# else:
+		# 	print("gun_bg %s" % " ".join(str(x) for x in self.leds[0:self.leds_lit]))
 
 		for led in self.leds:
 			GPIO.output(led, 0)
@@ -159,10 +159,10 @@ class gun_blast(object):
 
 	def advance_led(self):
 		self.leds_lit = (self.leds_lit + 1) % (len(self.leds) + 1)
-		if self.leds_lit == 0:
-			print("gun_blast is dim")
-		else:
-			print("gun_blast %s" % " ".join(str(x) for x in self.leds[0:self.leds_lit]))
+		# if self.leds_lit == 0:
+		# 	print("gun_blast is dim")
+		# else:
+		# 	print("gun_blast %s" % " ".join(str(x) for x in self.leds[0:self.leds_lit]))
 
 		for led in self.leds:
 			GPIO.output(led, 0)
@@ -205,14 +205,14 @@ class cyclotron(object):
 	def illuminate_led(self, num):
 		for led in self.leds:
 			GPIO.output(led, 0)
-			print("Turning off %s" % led)
+			# print("Turning off %s" % led)
 		GPIO.output(self.leds[num], 1)
-		print("Turning on %s" % self.leds[num])
+		# print("Turning on %s" % self.leds[num])
 
 	def advance_led(self):
 		self.led_lit = (self.led_lit + 1) % len(self.leds)
 		self.illuminate_led(self.led_lit)
-		print("cyclotron led %s" % self.leds[self.led_lit])
+		# print("cyclotron led %s" % self.leds[self.led_lit])
 
 	# Turn them all off
 	def dim_all_led(self):
@@ -220,7 +220,7 @@ class cyclotron(object):
 		self.led_lit = 0
 		for led in self.leds:
 			GPIO.output(led, 0)
-			print("Turning off %s" % led)
+			# print("Turning off %s" % led)
 
 # State machine for sound
 #  - Power up

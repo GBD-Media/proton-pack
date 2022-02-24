@@ -120,7 +120,7 @@ class gun_bg(object):
 
 # State machine for gun_blast (gun firing LEDs)
 class gun_blast(object):
-	leds = [26, 28]
+	leds = [26, 18]
 	states = [
 		{'name': 'off'},
 		{'name': 'running', 'timeout': 0.05, 'on_timeout': 'run_timeout'}
@@ -336,7 +336,7 @@ class switch(object):
 
 	def rising(self, args):
 		print("Switch off")
-		GPIO.output(self.led_pin, 0)
+		# GPIO.output(self.led_pin, 0)
 		self.c.switch_off()
 		self.p.switch_off()
 		self.s.switch_off()
@@ -345,7 +345,7 @@ class switch(object):
 
 	def falling(self, args):
 		print("Switch on")
-		GPIO.output(self.led_pin, 1)
+		# GPIO.output(self.led_pin, 1)
 		self.c.switch_on()
 		self.p.switch_on()
 		self.s.switch_on()

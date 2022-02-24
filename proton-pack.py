@@ -143,13 +143,13 @@ class gun_blast(object):
 
 	def on_enter_running(self):
 		self.advance_led()
-		print("gun_blast %d leds lit" % self.leds_lit)
+		# print("gun_blast %d leds lit" % self.leds_lit)
 
 	def on_enter_off(self):
 		self.dim_all_led()
 
 	def dim_all_led(self):
-		print("gun_blast is off")
+		# print("gun_blast is off")
 		self.leds_lit = 0
 		for led in self.leds:
 			GPIO.output(led, 0)
@@ -239,10 +239,10 @@ class sound_generator(object):
 		self.machine = CustomStateMachine(model=self, states=sound_generator.states, initial='off')
 
 		pygame.mixer.init()
-		self.power_up = pygame.mixer.Sound('/home/pi/power-up.wav')
-		self.power_down = pygame.mixer.Sound('/home/pi/power-down.wav')
-		self.firing = pygame.mixer.Sound('/home/pi/firing-loop.wav')
-		self.firing_release = pygame.mixer.Sound('/home/pi/firing-shutdown.wav')
+		self.power_up = pygame.mixer.Sound('/home/pi/proton-pack/power-up.wav')
+		self.power_down = pygame.mixer.Sound('/home/pi/proton-pack/power-down.wav')
+		self.firing = pygame.mixer.Sound('/home/pi/proton-pack/firing-loop.wav')
+		self.firing_release = pygame.mixer.Sound('/home/pi/proton-pack/firing-shutdown.wav')
 
 		self.machine.add_transition('switch_on', 'off', 'on')
 		self.machine.add_transition('fire_press', 'on', 'firing')

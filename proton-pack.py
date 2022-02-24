@@ -73,7 +73,7 @@ class gun_bg(object):
 	leds = [19, 21, 22, 23, 24]
 	states = [
 		{'name': 'off'},
-		{'name': 'running', 'timeout': 0.2, 'on_timeout': 'run_timeout'}
+		{'name': 'running', 'timeout': 0.1, 'on_timeout': 'run_timeout'}
 	]
 
 	def __init__(self):

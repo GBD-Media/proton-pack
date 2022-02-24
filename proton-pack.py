@@ -391,13 +391,13 @@ class fire(object):
 
 	def rising(self, args):
 		print("Fire released")
-		self.s.fire_release()
 		self.b.switch_off()
+		self.s.fire_release()
 
 	def falling(self, args):
 		print("Fire pressed")
-		self.s.fire_press()
 		self.b.switch_on()
+		self.s.fire_press()
 
 # This software will
 #  - Enable the lighting state machine while switch "on"

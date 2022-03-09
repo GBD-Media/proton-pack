@@ -264,7 +264,8 @@ class sound_generator(object):
 		{'name': 'off'},
 		{'name': 'on'},
 		{'name': 'firing'},
-		{'name': 'theme'}
+		{'name': 'theme'},
+		{'name': 'themeii'}
 	]
 
 	def __init__(self):
@@ -281,6 +282,8 @@ class sound_generator(object):
 		self.machine.add_transition('fire_release', 'firing', 'on')
 		self.machine.add_transition('theme_press', 'on', 'theme')
 		self.machine.add_transition('theme_release', 'theme', 'on')
+		self.machine.add_transition('themeii_press', 'on', 'themeii')
+		self.machine.add_transition('themeii_release', 'themeii', 'on')
 		self.machine.add_transition('switch_off', '*', 'off')
 
 	def on_exit_off(self):
@@ -306,6 +309,15 @@ class sound_generator(object):
 		pygame.mixer.music.play()
 
 	def on_exit_theme(self):
+		# Stop looping theme
+		pygame.mixer.music.stop()
+
+	def on_enter_themeii(self):
+		# Start looping theme
+		pygame.mixer.music.load('89theme.wav')
+		pygame.mixer.music.play()
+
+	def on_exit_themeii(self):
 		# Stop looping theme
 		pygame.mixer.music.stop()
 
@@ -406,6 +418,28 @@ class theme(object):
 		print("Theme pressed")
 		self.s.theme_press()
 
+class themeii(object):
+	def __init__(self, pin, c, p, s, g, b):
+		self.pin = pin
+		self.c = c
+		self.p = p
+		self.s = s
+		self.g = g
+		self.b = b
+
+		GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+		self.handler = ButtonHandler(pin, self, edge='both', bouncetime=200)
+		self.handler.start()
+		GPIO.add_event_detect(pin, GPIO.BOTH, self.handler)
+
+	def rising(self, args):
+		print("89 Theme released")
+		self.s.themeii_release()
+
+	def falling(self, args):
+		print("89 Theme pressed")
+		self.s.themeii_press()
+
 
 class fire(object):
 	def __init__(self, pin, c, p, s, g, b):
@@ -451,6 +485,7 @@ def run_logic(args):
 		sw = switch(16, c, p, s, g, b)
 		f = fire(13, c, p, s, g, b)
 		t = theme(15, c, p, s, g, b)
+		tii = themeii(29, c, p, s, g, b)
 
 		while True:
 			time.sleep(5)

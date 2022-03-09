@@ -15,15 +15,21 @@ class CustomStateMachine(Machine):
 
 # State machine for power_cell
 class power_cell(object):
-	leds = [29, 31, 33, 37, 32, 36, 38]
+	# leds = [29, 31, 33, 37, 32, 36, 38]
 	states = [
 		{'name': 'off'},
 		{'name': 'running', 'timeout': 0.2, 'on_timeout': 'run_timeout'}
 	]
+	dataPin = 32
+	latchPin = 36
+	clockPin = 38
+	numLEDs = 7
+
 
 	def __init__(self, cyclotron):
-		for led in self.leds:
-			GPIO.setup(led, GPIO.OUT, initial=GPIO.LOW)
+		# for led in self.leds:
+		# 	GPIO.setup(led, GPIO.OUT, initial=GPIO.LOW)
+		GPIO.setup((self.dataPin, self.latchPin, self.clockPin),GPIO.OUT)
 
 		self.leds_lit = 0
 		self.cyclotron = cyclotron
@@ -46,27 +52,53 @@ class power_cell(object):
 	def dim_all_led(self):
 		# print("power_pack is off")
 		self.leds_lit = 0
-		for led in self.leds:
-			GPIO.output(led, 0)
+		# for led in self.leds:
+			# GPIO.output(led, 0)
+		self.shift_update("00000000")
+		
 
 	def run_timeout(self):
 		self.increment()
 
+	def shift_update(self, input):
+		#put latch down to start data sending
+		GPIO.output(self.clockPin,0)
+		GPIO.output(self.latchPin,0)
+		GPIO.output(self.clockPin,1)
+
+		#load data in reverse order
+		for i in range(7, -1, -1):
+			GPIO.output(self.clockPin,0)
+			GPIO.output(self.dataPin, int(input[i]))
+			GPIO.output(self.clockPin,1)
+
+		#put latch up to store data on register
+		GPIO.output(self.clockPin,0)
+		GPIO.output(self.latchPin,1)
+		GPIO.output(self.clockPin,1)
+
 	def advance_led(self):
-		if self.leds_lit == len(self.leds) - 1:
+		if self.leds_lit == self.numLEDs - 1:
 			# Increment cyclotron
 			self.cyclotron.increment()
 
-		self.leds_lit = (self.leds_lit + 1) % (len(self.leds) + 1)
+		self.leds_lit = (self.leds_lit + 1) % (self.numLEDs + 1)
+		# print('leds_lit %d' % self.leds_lit)
 		# if self.leds_lit == 0:
 		# 	print("power_pack is dim")
 		# else:
 		# 	print("power_pack %s" % " ".join(str(x) for x in self.leds[0:self.leds_lit]))
 
-		for led in self.leds:
-			GPIO.output(led, 0)
-		for led in self.leds[0:self.leds_lit]:
-			GPIO.output(led, 1)
+		# for led in self.leds:
+		# 	GPIO.output(led, 0)
+		output = ""
+		for l in range(0, self.leds_lit, 1):
+			# GPIO.output(led, 1)
+			output += "1"
+		for p in range(0, 8 - self.leds_lit, 1):
+			output += "0"
+		# print(output)
+		self.shift_update(output)
 
 # State machine for gun_bg (gun bar graph LEDs)
 class gun_bg(object):
@@ -128,7 +160,7 @@ class gun_blast(object):
 
 	def __init__(self):
 		for led in self.leds:
-			print('setting %d' % led)
+			#print('setting %d' % led)
 			GPIO.setup(led, GPIO.OUT, initial=GPIO.LOW)
 
 		self.leds_lit = 0

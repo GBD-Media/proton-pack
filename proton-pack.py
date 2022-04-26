@@ -305,7 +305,7 @@ class sound_generator(object):
 
 	def on_enter_theme(self):
 		# Start looping theme
-		pygame.mixer.music.load('theme.wav')
+		pygame.mixer.music.load('/home/pi/proton-pack/theme.wav')
 		pygame.mixer.music.play()
 
 	def on_exit_theme(self):
@@ -314,7 +314,7 @@ class sound_generator(object):
 
 	def on_enter_themeii(self):
 		# Start looping theme
-		pygame.mixer.music.load('89theme.wav')
+		pygame.mixer.music.load('/home/pi/proton-pack/89theme.wav')
 		pygame.mixer.music.play()
 
 	def on_exit_themeii(self):

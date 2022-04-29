@@ -9,6 +9,7 @@ from time import sleep
 from transitions import Machine
 from transitions.extensions.states import add_state_features, Timeout
 
+
 @add_state_features(Timeout)
 class CustomStateMachine(Machine):
 	pass
@@ -265,7 +266,8 @@ class sound_generator(object):
 		{'name': 'on'},
 		{'name': 'firing'},
 		{'name': 'theme'},
-		{'name': 'themeii'}
+		{'name': 'themeii'},
+		{'name': 'boot'}
 	]
 
 	def __init__(self):
@@ -276,6 +278,7 @@ class sound_generator(object):
 		self.power_down = pygame.mixer.Sound('/home/pi/proton-pack/power-down.wav')
 		self.firing = pygame.mixer.Sound('/home/pi/proton-pack/firing-loop.wav')
 		self.firing_release = pygame.mixer.Sound('/home/pi/proton-pack/firing-shutdown.wav')
+		self.booting_up = pygame.mixer.Sound('/home/pi/proton-pack/bustin.wav')
 
 		self.machine.add_transition('switch_on', 'off', 'on')
 		self.machine.add_transition('fire_press', 'on', 'firing')
@@ -285,6 +288,11 @@ class sound_generator(object):
 		self.machine.add_transition('themeii_press', 'on', 'themeii')
 		self.machine.add_transition('themeii_release', 'themeii', 'on')
 		self.machine.add_transition('switch_off', '*', 'off')
+		self.machine.add_transition('boot_up', '*', 'boot')
+
+	def on_boot_up(self):
+		#play when device ready
+		self.booting_up.play()
 
 	def on_exit_off(self):
 		# Play power-up sound
@@ -487,6 +495,8 @@ def run_logic(args):
 		t = theme(15, c, p, s, g, b)
 		tii = themeii(29, c, p, s, g, b)
 
+		s.booting_up.play();
+		
 		while True:
 			time.sleep(5)
 	

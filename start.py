@@ -295,7 +295,7 @@ class sound_generator(object):
 		self.power_down = pygame.mixer.Sound('/home/pi/proton-pack/power-down.wav')
 		self.firing = pygame.mixer.Sound('/home/pi/proton-pack/firing-loop.wav')
 		self.firing_release = pygame.mixer.Sound('/home/pi/proton-pack/firing-shutdown.wav')
-		self.booting_up = pygame.mixer.Sound('/home/pi/proton-pack/bustin.wav')
+		self.booting_up = pygame.mixer.Sound('/home/pi/proton-pack/start.wav')
 
 		self.machine.add_transition('switch_on', 'off', 'on')
 		self.machine.add_transition('fire_press', 'on', 'firing')
